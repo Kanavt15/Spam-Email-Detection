@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spam Detection System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <h1>Spam Detection System</h1>
+            </div>
+            <div class="status-indicator" id="apiStatus">
+                <span class="status-dot" id="statusDot"></span>
+                <span id="statusText">Connecting...</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Detection Section -->
+            <section class="detection-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-search"></i> Message Detection</h2>
+                    <p>Enter a message to check if it's spam or legitimate</p>
+                </div>
+                
+                <div class="input-section">
+                    <div class="textarea-container">
+                        <textarea 
+                            id="messageInput" 
+                            placeholder="Enter your message here..."
+                            rows="4"
+                        ></textarea>
+                        <div class="char-counter">
+                            <span id="charCount">0</span> characters
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="analyzeBtn" class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                            Analyze Message
+                        </button>
+                        <button id="clearBtn" class="btn btn-secondary">
+                            <i class="fas fa-eraser"></i>
+                            Clear
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div id="resultSection" class="result-section hidden">
+                    <div class="result-header">
+                        <h3>Analysis Result</h3>
+                    </div>
+                    <div class="result-content">
+                        <div class="prediction-badge" id="predictionBadge">
+                            <i id="predictionIcon"></i>
+                            <span id="predictionText"></span>
+                        </div>
+                        
+                        <div class="confidence-meters">
+                            <div class="confidence-item">
+                                <label>Spam Probability</label>
+                                <div class="progress-bar">
+                                    <div class="progress-fill spam" id="spamProgress"></div>
+                                    <span class="progress-text" id="spamPercentage">0%</span>
+                                </div>
+                            </div>
+                            
+                            <div class="confidence-item">
+                                <label>Ham Probability</label>
+                                <div class="progress-bar">
+                                    <div class="progress-fill ham" id="hamProgress"></div>
+                                    <span class="progress-text" id="hamPercentage">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sample Messages Section - Moved closer to checker -->
+            <section class="samples-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-eye"></i> Quick Test Examples</h2>
+                    <p>Click any message below to test it instantly</p>
+                </div>
+                
+                <div class="samples-grid">
+                    <div class="sample-column">
+                        <h3><i class="fas fa-shield-alt"></i> Legitimate Messages (Ham)</h3>
+                        <div id="hamSamples" class="sample-list">
+                            <div class="loading">Loading samples...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="sample-column">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Spam Messages</h3>
+                        <div id="spamSamples" class="sample-list">
+                            <div class="loading">Loading samples...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bayesian Network Info Section -->
+            <section class="info-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-project-diagram"></i> Bayesian Network for Spam Detection</h2>
+                    <p>Understanding how probabilistic models classify messages</p>
+                </div>
+                
+                <div class="info-grid">
+                    <!-- Bayesian Network Visualization -->
+                    <div class="info-card full-width">
+                        <div class="card-header">
+                            <i class="fas fa-sitemap"></i>
+                            <h3>Bayesian Network Structure</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="bayesian-network">
+                                <div class="network-layer">
+                                    <div class="network-node class-node" title="Classification Target - The output we want to predict" data-info="Determines whether an email is Spam (unwanted) or Ham (legitimate). This is the root node that influences all word probabilities.">
+                                        <i class="fas fa-tag"></i>
+                                        <span>Class</span>
+                                        <small>(Spam/Ham)</small>
+                                    </div>
+                                </div>
+                                <div class="network-arrows">
+                                    <div class="arrow" title="Conditional Probability Flow - Each word's probability depends on the class"></div>
+                                    <div class="arrow" title="Bayesian Inference - Evidence flows from words to classification"></div>
+                                    <div class="arrow" title="Naive Independence - Words are assumed independent given the class"></div>
+                                </div>
+                                <div class="network-layer">
+                                    <div class="network-node feature-node" title="Text Features - Individual words from the message" data-info="Examples: 'free', 'offer', 'click', 'money'. Each word provides evidence for spam or ham classification based on learned probabilities.">
+                                        <i class="fas fa-font"></i>
+                                        <span>Word 1</span>
+                                    </div>
+                                    <div class="network-node feature-node" title="TF-IDF Features - Weighted word importance" data-info="Term Frequency-Inverse Document Frequency weights. Common spam words like 'urgent', 'winner' have higher weights in spam detection.">
+                                        <i class="fas fa-font"></i>
+                                        <span>Word 2</span>
+                                    </div>
+                                    <div class="network-node feature-node" title="Feature Vector - All possible word features" data-info="Represents thousands of possible words. The model learns P(word|spam) and P(word|ham) for each word during training.">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                        <span>Word N</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Network Statistics -->
+                            <div class="network-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-brain"></i>
+                                    <span class="stat-label">Algorithm</span>
+                                    <span class="stat-value">Multinomial Naive Bayes</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-balance-scale"></i>
+                                    <span class="stat-label">Independence</span>
+                                    <span class="stat-value">Naive Assumption</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    <span class="stat-label">Performance</span>
+                                    <span class="stat-value">96.59% Accuracy</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Train Button -->
+                            <div class="train-section">
+                                <button id="trainBtn" class="btn btn-accent">
+                                    <i class="fas fa-play"></i>
+                                    Train Model
+                                </button>
+                                <p class="train-note">Click to train the Bayesian classifier if not already trained</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bayesian Process Explanation -->
+                <div class="process-explanation">
+                    <h3><i class="fas fa-cogs"></i> How Bayesian Classification Works</h3>
+                    <div class="process-steps">
+                        <div class="process-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Text Preprocessing</h4>
+                                <p>Clean and tokenize the message, remove stop words, and apply stemming</p>
+                                <div class="step-visual">
+                                    <span class="input-text">"Free iPhone NOW!!!"</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                    <span class="output-text">["free", "iphone"]</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="process-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Feature Extraction</h4>
+                                <p>Convert words to numerical features using TF-IDF vectorization</p>
+                                <div class="step-visual">
+                                    <div class="feature-vector">
+                                        <span>free: 0.85</span>
+                                        <span>iphone: 0.62</span>
+                                        <span>click: 0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="process-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Bayesian Calculation</h4>
+                                <p>Apply Bayes' theorem to calculate probability of spam given the features</p>
+                                <div class="step-visual">
+                                    <div class="formula">
+                                        P(Spam|Words) = P(Words|Spam) × P(Spam) / P(Words)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="process-step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>Classification</h4>
+                                <p>Compare probabilities and classify as spam or legitimate message</p>
+                                <div class="step-visual">
+                                    <div class="probability-bars">
+                                        <div class="prob-bar spam-bar">
+                                            <span>Spam: 87%</span>
+                                            <div class="bar-fill" style="width: 87%"></div>
+                                        </div>
+                                        <div class="prob-bar ham-bar">
+                                            <span>Ham: 13%</span>
+                                            <div class="bar-fill" style="width: 13%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay hidden">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p id="loadingText">Processing...</p>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toastContainer" class="toast-container"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
