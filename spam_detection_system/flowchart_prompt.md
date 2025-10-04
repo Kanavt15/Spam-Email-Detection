@@ -1,0 +1,15 @@
+# Flowchart Prompt: Bayesian Spam Detection System Process Flow
+
+## System Process Flow Visualization
+
+Create a comprehensive flowchart diagram showing the complete data flow and decision process of a Bayesian Network-based Spam Detection System, starting with **User Input** (message entry via HTML5 textarea with character counter) → **Input Validation** (check for empty message, length limits, special characters) → **Text Preprocessing** (convert to lowercase, remove URLs/emails/phone numbers using regex, NLTK tokenization, Porter Stemmer application, stop words removal from English corpus) → **Feature Extraction** (TF-IDF vectorization with 5000 max features, sparse matrix generation, feature weight calculation) → **Bayesian Classification** (Multinomial Naive Bayes probability calculation using P(spam|words) = P(words|spam) × P(spam) / P(words), naive independence assumption applied to word features, confidence score computation for both spam and ham classes) → **Decision Logic** (compare spam vs ham probabilities, apply classification threshold, determine final prediction with confidence percentage) → **Result Processing** (format JSON response with prediction label, confidence scores, probability breakdown) → **Frontend Visualization** (update prediction badge with spam/ham result, animate confidence meters with real-time progress bars, display Bayesian network nodes with probability flows, show sample messages for quick testing) → **Error Handling** (API error responses for model not trained, invalid input formats, server errors) with parallel flows for **Model Training** (load SMS Spam Collection dataset with 5,574 messages, split into train/test sets, fit TF-IDF vectorizer and Multinomial NB classifier, achieve 96.59% accuracy, serialize model using Joblib) and **Educational Display** (interactive Bayesian network visualization with animated nodes representing class and word features, arrows showing conditional dependencies, tooltips explaining probabilistic relationships, step-by-step process breakdown), including decision diamonds for validation checks, process rectangles for data transformations, and result displays for user feedback.
+
+## Flowchart Elements to Include:
+- **Start/End Points**: User message input and final classification display
+- **Decision Diamonds**: Input validation, model training status, classification threshold
+- **Process Rectangles**: Text preprocessing, feature extraction, Bayesian calculation
+- **Data Stores**: SMS dataset, trained model, TF-IDF vectorizer
+- **Parallel Processes**: Model training workflow, real-time prediction workflow
+- **Error Paths**: Invalid input handling, API error responses, model not found
+- **User Interface**: Frontend visualization updates, confidence meter animations
+- **System Components**: Flask API endpoints, JavaScript event handlers, CSS animations
